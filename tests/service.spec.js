@@ -8,11 +8,16 @@ describe('Service', function (){
     let vendorHelper = new VendorHelper()
     let serviceHelper = new ServiceHelper()
     let vendor
+    let service
 
     before(async function (){
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
-      await serviceHelper.create(vendor.payload)
+      vendor = (await vendorHelper.create()).body
+      service = (await serviceHelper.create(vendor.payload))
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
+      await serviceHelper.deleteService(service.body.payload)
     })
 
     it('response status code is 200', function (){
@@ -28,19 +33,21 @@ describe('Service', function (){
     })
   })
 
-  describe('Get service by serviceId', function () {
+  describe ('Get service by serviceId', function () {
     let vendorHelper = new VendorHelper()
     let serviceHelper = new ServiceHelper()
     let vendor
     let service
 
     before(async function () {
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
-      await serviceHelper.create(vendor.payload)
-      service = await serviceHelper.response.body
+      vendor = (await vendorHelper.create()).body
+      service = (await serviceHelper.create(vendor.payload)).body
       await serviceHelper.get(service.payload)
+    })
 
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
+      await serviceHelper.deleteService(service.payload)
     })
 
     it('response status code is 200', function () {
@@ -56,34 +63,37 @@ describe('Service', function (){
     })
   })
 
-  describe('Get All data for services', function () {
-    let seviceHelper = new ServiceHelper()
+  describe ('Get All data for services', function () {
+    let serviceHelper = new ServiceHelper()
 
     before(async function () {
-      await seviceHelper.getAllServices()
+      await serviceHelper.getAllServices()
     })
 
     it('response status code is 200', function () {
-      expect(seviceHelper.response.status).to.eq(200)
+      expect(serviceHelper.response.status).to.eq(200)
     })
 
     it('response message for all vendors', function () {
-      expect(seviceHelper.response.body.message).to.eq('Service Search ok')
+      expect(serviceHelper.response.body.message).to.eq('Service Search ok')
     })
   })
 
-  describe('Change service', function () {
+  describe ('Change service', function () {
     let vendorHelper = new VendorHelper()
     let serviceHelper = new ServiceHelper()
     let vendor
     let service
 
     before(async function (){
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
-      await serviceHelper.create(vendor.payload)
-      service = await serviceHelper.response.body
+      vendor = (await vendorHelper.create()).body
+      service = (await serviceHelper.create(vendor.payload)).body
       await serviceHelper.changeService(service.payload)
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
+      await serviceHelper.deleteService(service.payload)
     })
 
     it('response status code is 200', function () {
@@ -95,18 +105,20 @@ describe('Service', function (){
     })
   })
 
-  describe('Delete service', function () {
+  describe ('Delete service', function () {
     let vendorHelper = new VendorHelper()
     let serviceHelper = new ServiceHelper()
     let vendor
     let service
 
     before(async function (){
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
-      await serviceHelper.create(vendor.payload)
-      service = await serviceHelper.response.body
+      vendor = (await vendorHelper.create()).body
+      service = (await serviceHelper.create(vendor.payload)).body
       await serviceHelper.deleteService(service.payload)
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
     })
 
     it('response status code is 200', function () {

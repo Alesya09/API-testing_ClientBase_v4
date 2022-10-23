@@ -2,13 +2,17 @@ import {expect} from "chai"
 import ClientHelper from "../helpers/client.helper";
 
 describe('Client', function () {
-  describe('Create client', function () {
+  describe ('Create client', function () {
     let clientHelper = new ClientHelper()
+    let client
 
     before(async function () {
-      await clientHelper.create()
+      client = (await clientHelper.create())
     })
 
+    after(async function() {
+      await clientHelper.delete(client.body.payload)
+    })
 
     it('response status code is 200', function () {
       expect(clientHelper.response.status).to.eq(200)
@@ -23,14 +27,17 @@ describe('Client', function () {
     })
   })
 
-  describe('get client', function () {
+  describe('Get client', function () {
     let clientHelper = new ClientHelper()
     let client
 
     before(async function () {
-      await clientHelper.create()
-      client = clientHelper.response.body
+      client = (await clientHelper.create()).body
       await clientHelper.get(client.payload)
+    })
+
+    after(async function() {
+      await clientHelper.delete(client.payload)
     })
 
     it('response status code is 200', function () {
@@ -67,8 +74,7 @@ describe('Client', function () {
     let client
 
     before(async function () {
-      await clientHelper.create()
-      client = await clientHelper.response.body
+      client = (await clientHelper.create()).body
       await clientHelper.delete(client.payload)
     })
 
@@ -87,9 +93,12 @@ describe('Client', function () {
 
 
     before(async function () {
-      await clientHelper.create()
-      client = await clientHelper.response.body
+      client = (await clientHelper.create()).body
       await clientHelper.patch(client.payload)
+    })
+
+    after(async function() {
+      await clientHelper.delete(client.payload)
     })
 
     it('response status code is 200', function () {
