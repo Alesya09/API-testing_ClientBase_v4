@@ -91,7 +91,6 @@ describe('Client', function () {
     let clientHelper = new ClientHelper()
     let client
 
-
     before(async function () {
       client = (await clientHelper.create()).body
       await clientHelper.patch(client.payload)
