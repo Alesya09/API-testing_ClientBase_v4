@@ -2,11 +2,16 @@ import {expect} from "chai";
 import VendorHelper from "../helpers/vendor.helper";
 
 describe ('Vendor', function () {
-  describe('Create vendor', function () {
+  describe ('Create vendor', function () {
     let vendorHelper = new VendorHelper()
+    let vendor
 
     before(async function () {
-      await vendorHelper.create()
+      vendor = (await vendorHelper.create())
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.body.payload)
     })
 
     it('response status code is 200', function () {
@@ -22,14 +27,17 @@ describe ('Vendor', function () {
     })
   })
 
-  describe('Get data vendor', function () {
+  describe ('Get data vendor', function () {
     let vendorHelper = new VendorHelper()
     let vendor
 
     before(async function () {
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
+      vendor = (await vendorHelper.create()).body
       await vendorHelper.get(vendor.payload)
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
     })
 
     it('response status code is 200', function () {
@@ -61,14 +69,17 @@ describe ('Vendor', function () {
     })
   })
 
-  describe('Change vendor', function () {
+  describe ('Change vendor', function () {
     let vendorHelper = new VendorHelper()
     let vendor
 
     before(async function () {
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
+      vendor = (await vendorHelper.create()).body
       await vendorHelper.changeVendor(vendor.payload)
+    })
+
+    after(async function() {
+      await vendorHelper.deleteVendor(vendor.payload)
     })
 
     it('response status code is 200', function () {
@@ -85,9 +96,8 @@ describe ('Vendor', function () {
     let vendor
 
     before(async function () {
-      await vendorHelper.create()
-      vendor = await vendorHelper.response.body
-      await vendorHelper.deleteVendor1(vendor.payload)
+      vendor = (await vendorHelper.create()).body
+      await vendorHelper.deleteVendor(vendor.payload)
     })
 
     it('response status code is 200', function () {
@@ -100,21 +110,3 @@ describe ('Vendor', function () {
   })
 })
 
-  // describe.only('delete the same vendor', function (){
-  //   let vendorHelper = new VendorHelper()
-  //   let vendor
-  //
-  //   before (async function (){
-  //     await vendorHelper.deleteVendor1()
-  //     vendor = await vendorHelper.response.body
-  //     await vendorHelper.deleteVendor2(vendor)
-  //   })
-  //
-  //   it('response status code is 400', function (){
-  //     expect(vendorHelper.response.status).to.eq(400)
-  //   })
-  //
-  //   it('response message foe delete vendor', function (){
-  //     expect(vendorHelper.response.body.message).to.eq('Vendor not found')
-  //   })
-  // })

@@ -40,5 +40,3 @@ export default class ClientHelper{
     return this.response
   }
 }
-
-
